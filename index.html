@@ -271,21 +271,9 @@
             }, 0.1);
         }
 
-        const encodedToken = 'ENCODED TOKEN HERE';
-
-        function decodeToken(encodedToken) {
-            return atob(encodedToken); // Decode the token
-        }
-    
         async function fetchExample(endpoint, exampleId) {
             try {
-                const token = decodeToken(encodedToken);
-                const response = await fetch(endpoint + '?example=true', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': token
-                    }
-                });
+                const response = await fetch(endpoint);
                 const data = await response.json();
                 const exampleElement = document.getElementById(exampleId);
                 const jsonString = JSON.stringify(data, null, 2);
@@ -295,13 +283,13 @@
                 typeWriter(exampleElement, '"Failed to load example"');
             }
         }
-    
-        fetchExample('/home', 'home-example');
-        fetchExample('/episode/dubu-xiaoyao-episode-445-subtitle-indonesia/', 'episode-example');
-        fetchExample('/completed/1', 'completed-example');
-        fetchExample('/seri/ancient-lords/', 'seri-example');
-        fetchExample('/ongoing', 'ongoing-example');
-        fetchExample('/genres/gore', 'genres-example');
+
+        fetchExample('https://apidonghua.vercel.app/home', 'home-example');
+        fetchExample('https://apidonghua.vercel.app/episode/dubu-xiaoyao-episode-445-subtitle-indonesia/', 'episode-example');
+        fetchExample('https://apidonghua.vercel.app/completed/1', 'completed-example');
+        fetchExample('https://apidonghua.vercel.app/seri/ancient-lords/', 'seri-example');
+        fetchExample('https://apidonghua.vercel.app/ongoing', 'ongoing-example');
+        fetchExample('https://apidonghua.vercel.app/genres/gore', 'genres-example');
     </script>
 </body>
 
