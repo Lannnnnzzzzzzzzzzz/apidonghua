@@ -43,28 +43,36 @@ async function scrapeOngoingPage() {
       const $ = cheerio.load(data);
 
       const schedule = {
-        senin: [],
-        selasa: [],
-        rabu: [],
-        kamis: [],
-        jumat: [],
-        sabtu: [],
-        minggu: []
+        monday: [],
+        tuesday: [],
+        wednesday: [],
+        thursday: [],
+        friday: [],
+        saturday: [],
+        sunday: []
       };
 
-      const days = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu'];
+      const dayMapping = {
+        'sch_monday': 'monday',
+        'sch_tuesday': 'tuesday',
+        'sch_wednesday': 'wednesday',
+        'sch_thursday': 'thursday',
+        'sch_friday': 'friday',
+        'sch_saturday': 'saturday',
+        'sch_sunday': 'sunday'
+      };
 
-      // Iterate through each day tab
-      days.forEach((day, index) => {
-        const tabIndex = index + 1;
-        $(`#tab${tabIndex} .bs`).each((i, element) => {
+      // Iterate through each day section
+      Object.keys(dayMapping).forEach(dayClass => {
+        const dayKey = dayMapping[dayClass];
+        $(`.bixbox.schedulepage.${dayClass} .listupd .bs`).each((i, element) => {
           const title = $(element).find('a').attr('title')?.trim() || '';
           const seriesLink = $(element).find('a').attr('href')?.replace('https://anichin.cafe', '') || '';
           const imageSrc = $(element).find('img').attr('src') || '';
           const episodeCount = $(element).find('.bt .sb').text().trim();
           const releaseTime = $(element).find('.bt .epx').text().trim();
 
-          schedule[day].push({
+          schedule[dayKey].push({
               title,
               seriesLink,
               imageSrc,
