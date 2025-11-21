@@ -5,19 +5,6 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
-const VALID_TOKEN = 'VALID TOKEN HERE';
-
-function authenticateToken(req, res, next) {
-  const token = req.headers['authorization'];
-
-  if (token === VALID_TOKEN) {
-    next();
-  } else {
-    res.status(403).json({ message: 'Forbidden: Invalid token' }); 
-  }
-}
-
-
 async function scrapeMainPage() {
   try {
     const { data } = await axios.get('https://anichin.live/');
@@ -441,36 +428,35 @@ async function scrapeGenres(genreName) {
 
 
 
-// Use the middleware to protect routes
-app.get('/home', authenticateToken, async (req, res) => {
+app.get('/home', async (req, res) => {
   const data = await scrapeMainPage();
   res.json(data);
 });
 
-app.get('/ongoing', authenticateToken, async (req, res) => {
+app.get('/ongoing', async (req, res) => {
   const data = await scrapeOngoingPage();
   res.json(data);
 });
 
-app.get('/episode/:endpoint', authenticateToken, async (req, res) => {
+app.get('/episode/:endpoint', async (req, res) => {
   const { endpoint } = req.params;
   const data = await scrapeEndpoint(`/${endpoint}`);
   res.json(data);
 });
 
-app.get('/completed/:page?', authenticateToken, async (req, res) => {
-  const page = req.params.page || 1; 
+app.get('/completed/:page?', async (req, res) => {
+  const page = req.params.page || 1;
   const data = await scrapeCompletedPage(page);
   res.json(data);
 });
 
-app.get('/seri/:endpoint', authenticateToken, async (req, res) => {
+app.get('/seri/:endpoint', async (req, res) => {
   const { endpoint } = req.params;
   const data = await scrapeSeries(endpoint);
   res.json(data);
 });
 
-app.get('/genres/:genreName', authenticateToken, async (req, res) => {
+app.get('/genres/:genreName', async (req, res) => {
   const { genreName } = req.params;
   const data = await scrapeGenres(genreName);
   res.json(data);
