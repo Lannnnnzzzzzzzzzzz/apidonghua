@@ -155,9 +155,57 @@ async function scrapeEndpoint(endpoint) {
       });
     });
 
+    // Extract streaming servers
+    const servers = [];
+    $('.player-list li').each((i, el) => {
+      const serverName = $(el).text().trim();
+      const serverUrl = $(el).attr('data-embed') || $(el).find('a').attr('data-embed');
+
+      if (serverUrl) {
+        servers.push({
+          name: serverName,
+          url: serverUrl
+        });
+      }
+    });
+
+    // Extract download links
+    const downloadLinks = [];
+    $('.download-content .download-eps li').each((i, el) => {
+      const quality = $(el).find('strong').text().trim();
+      const links = [];
+
+      $(el).find('a').each((j, link) => {
+        const provider = $(link).text().trim();
+        const url = $(link).attr('href');
+
+        if (url) {
+          links.push({
+            provider,
+            url
+          });
+        }
+      });
+
+      if (quality && links.length > 0) {
+        downloadLinks.push({
+          quality,
+          links
+        });
+      }
+    });
+
     return {
       title,
       video_link: iframeSrc,
+      streaming: {
+        main_url: {
+          name: 'Premium',
+          url: iframeSrc || ''
+        },
+        servers: servers
+      },
+      download_url: downloadLinks,
       details: {
         mainImage,
         mainTitle,
@@ -177,11 +225,10 @@ async function scrapeEndpoint(endpoint) {
         description
       },
       episodes: episodeList
-
     };
   } catch (error) {
     console.error(`Error scraping the endpoint ${endpoint}:`, error);
-    return { title: 'Error', releasedOn: 'Error', video: 'Error', episodes: [], details: {} };
+    return { title: 'Error', video_link: '', streaming: { main_url: { name: '', url: '' }, servers: [] }, download_url: [], episodes: [], details: {} };
   }
 }
 
