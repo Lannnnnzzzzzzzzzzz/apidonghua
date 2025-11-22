@@ -5,9 +5,26 @@ const path = require('path');
 const app = express();
 const port = 3000;
 
+// Configure axios with headers to bypass Cloudflare
+const axiosConfig = {
+  headers: {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'Accept-Language': 'en-US,en;q=0.5',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests': '1',
+    'Sec-Fetch-Dest': 'document',
+    'Sec-Fetch-Mode': 'navigate',
+    'Sec-Fetch-Site': 'none',
+    'Cache-Control': 'max-age=0'
+  },
+  timeout: 30000
+};
+
 async function scrapeMainPage() {
   try {
-    const { data } = await axios.get('https://anichin.moe/');
+    const { data } = await axios.get('https://anichin.moe/', axiosConfig);
     const $ = cheerio.load(data);
 
     const results = [];
@@ -39,7 +56,7 @@ async function scrapeMainPage() {
 async function scrapeOngoingPage() {
   try {
       const url = 'https://anichin.moe/schedule/';
-      const { data } = await axios.get(url);
+      const { data } = await axios.get(url, axiosConfig);
       const $ = cheerio.load(data);
 
       const schedule = {
@@ -95,7 +112,7 @@ async function scrapeEndpoint(endpoint) {
     const url = `https://anichin.moe${endpoint}`;
     console.log('Scraping URL:', url);
 
-    const { data } = await axios.get(url);
+    const { data } = await axios.get(url, axiosConfig);
     const $ = cheerio.load(data);
 
     const title = $('.entry-title').text().trim();
@@ -172,7 +189,7 @@ async function scrapeEndpoint(endpoint) {
 async function scrapeCompletedPage(page = 1) {
   try {
     const url = page === 1 ? 'https://anichin.moe/completed/' : `https://anichin.moe/completed/page/${page}/`;
-    const { data } = await axios.get(url);
+    const { data } = await axios.get(url, axiosConfig);
     const $ = cheerio.load(data);
 
     const results = [];
@@ -203,7 +220,7 @@ async function scrapeSeries(endpoint) {
         const url = `https://anichin.moe/seri/${endpoint}`;
         console.log('Scraping Series URL:', url);
 
-        const { data } = await axios.get(url);
+        const { data } = await axios.get(url, axiosConfig);
         const $ = cheerio.load(data);
 
         const bigContent = $('.bigcontent');
@@ -283,7 +300,7 @@ async function scrapeSeries(endpoint) {
 async function scrapeGenres(genreName) {
   try {
     const url = `https://anichin.moe/genres/${genreName}`;
-    const { data } = await axios.get(url);
+    const { data } = await axios.get(url, axiosConfig);
     const $ = cheerio.load(data);
 
     const results = [];
