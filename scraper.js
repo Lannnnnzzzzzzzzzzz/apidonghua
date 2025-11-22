@@ -155,13 +155,25 @@ async function scrapeEndpoint(endpoint) {
       });
     });
 
-    // Extract streaming servers
+    // Extract streaming servers from select.mirror option elements
     const servers = [];
-    $('.player-list li').each((i, el) => {
+    $('select.mirror option').each((i, el) => {
       const serverName = $(el).text().trim();
-      const serverUrl = $(el).attr('data-embed') || $(el).find('a').attr('data-embed');
+      const serverValue = $(el).attr('value');
 
-      if (serverUrl) {
+      if (serverValue && serverName !== 'Select Video Server') {
+        // Decode base64 to get iframe src
+        let serverUrl = '';
+        try {
+          const decodedIframe = Buffer.from(serverValue, 'base64').toString('utf-8');
+          const srcMatch = decodedIframe.match(/src="([^"]+)"/);
+          if (srcMatch && srcMatch[1]) {
+            serverUrl = srcMatch[1];
+          }
+        } catch (e) {
+          serverUrl = serverValue;
+        }
+
         servers.push({
           name: serverName,
           url: serverUrl
