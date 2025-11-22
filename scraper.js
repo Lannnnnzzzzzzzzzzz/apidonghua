@@ -14,9 +14,9 @@ async function scrapeMainPage() {
 
     // Scrape latest releases from homepage
     $('.listupd.normal .excstf article.bs').each((index, element) => {
-      const title = $(element).find('h2[itemprop="headline"]').text().trim();
-      const href = $(element).find('a.tip').attr('href')?.replace('https://anichin.moe', '/episode') || '';
-      const imgSrc = $(element).find('img.ts-post-image').attr('src');
+      const title = $(element).find('.tt h2').text().trim();
+      const href = $(element).find('.bsx a').attr('href') || '';
+      const imgSrc = $(element).find('.limit img').attr('src');
       const episode = $(element).find('.bt .epx').text().trim();
       const type = $(element).find('.typez').text().trim();
 
