@@ -282,9 +282,9 @@
                     </div>
                     <p class="mb-3 text-sm opacity-80">Get series details and episode list</p>
                     <div class="bg-gray-800 p-2 rounded text-sm font-mono text-green-400 mb-2">
-                        https://apidonghua.vercel.app/seri/<span class="text-yellow-400">perfect-world</span>
+                        https://apidonghua.vercel.app/seri/<span class="text-yellow-400">36-cavalry</span>
                     </div>
-                    <input type="text" class="input-box text-sm" placeholder="Series slug (e.g., perfect-world)" value="perfect-world" id="seri-input">
+                    <input type="text" class="input-box text-sm" placeholder="Series slug (e.g., 36-cavalry, legend-of-martial-immortal)" value="36-cavalry" id="seri-input">
                     <button class="try-button" onclick="tryEndpoint('seri', document.getElementById('seri-input').value, 'seri-example')">Try It</button>
                     <h4 class="text-sm font-semibold mt-4 mb-2">Example Response:</h4>
                     <pre class="code-block"><code class="language-json" id="seri-example"></code></pre>
@@ -298,9 +298,9 @@
                     </div>
                     <p class="mb-3 text-sm opacity-80">Get episode details and video link</p>
                     <div class="bg-gray-800 p-2 rounded text-sm font-mono text-green-400 mb-2">
-                        https://apidonghua.vercel.app/episode/<span class="text-yellow-400">perfect-world-episode-242-subtitle-indonesia</span>
+                        https://apidonghua.vercel.app/episode/<span class="text-yellow-400">legend-of-martial-immortal-episode-142-subtitle-indonesia</span>
                     </div>
-                    <input type="text" class="input-box text-sm" placeholder="Episode slug" value="perfect-world-episode-242-subtitle-indonesia" id="episode-input">
+                    <input type="text" class="input-box text-sm" placeholder="Episode slug" value="legend-of-martial-immortal-episode-142-subtitle-indonesia" id="episode-input">
                     <button class="try-button" onclick="tryEndpoint('episode', document.getElementById('episode-input').value, 'episode-example')">Try It</button>
                     <h4 class="text-sm font-semibold mt-4 mb-2">Example Response:</h4>
                     <pre class="code-block"><code class="language-json" id="episode-example"></code></pre>
@@ -352,6 +352,7 @@
         async function fetchExample(endpoint, exampleId) {
             try {
                 const response = await fetch(endpoint);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
                 const exampleElement = document.getElementById(exampleId);
                 const jsonString = JSON.stringify(data, null, 2);
@@ -382,12 +383,98 @@
             }
         }
 
-        fetchExample('https://apidonghua.vercel.app/home', 'home-example');
-        fetchExample('https://apidonghua.vercel.app/ongoing', 'ongoing-example');
-        fetchExample('https://apidonghua.vercel.app/completed/1', 'completed-example');
-        fetchExample('https://apidonghua.vercel.app/genres/action', 'genres-example');
-        fetchExample('https://apidonghua.vercel.app/seri/perfect-world', 'seri-example');
-        fetchExample('https://apidonghua.vercel.app/episode/perfect-world-episode-242-subtitle-indonesia', 'episode-example');
+        // Load static examples for better reliability
+        const examples = {
+            'home-example': [
+                {
+                    "title": "Legend of Martial Immortal Episode 142 Subtitle Indonesia",
+                    "href": "/legend-of-martial-immortal-episode-142-subtitle-indonesia/",
+                    "image": "https://i0.wp.com/anichin.moe/wp-content/uploads/2023/03/Legend-of-Martial-Immortal-Subtitle-Indonesia.webp?resize=247,350",
+                    "episode": "Ep 142",
+                    "type": "Donghua"
+                },
+                {
+                    "title": "Battle Through the Heavens Season 5 Episode 173 Subtitle Indonesia",
+                    "href": "/battle-through-the-heavens-season-5-episode-173-subtitle-indonesia/",
+                    "image": "https://i0.wp.com/anichin.moe/wp-content/uploads/2022/12/BTTH.webp?resize=247,350",
+                    "episode": "Ep 173",
+                    "type": "Donghua"
+                }
+            ],
+            'ongoing-example': {
+                "monday": [
+                    {
+                        "title": "The Divine Emperor of Destiny",
+                        "seriesLink": "/the-divine-emperor-of-destiny/",
+                        "imageSrc": "https://i0.wp.com/anichin.moe/wp-content/uploads/2025/09/The-Divine-Emperor-of-Destiny-Subtitle-Indonesia.webp?resize=247,350",
+                        "episodeCount": "26",
+                        "releaseTime": "at 00:43"
+                    }
+                ],
+                "tuesday": [],
+                "wednesday": [],
+                "thursday": [],
+                "friday": [],
+                "saturday": [],
+                "sunday": []
+            },
+            'completed-example': [
+                {
+                    "title": "36 Cavalry",
+                    "href": "/36-cavalry/",
+                    "image": "https://i3.wp.com/anichin.moe/wp-content/uploads/2023/10/36-Cavalry.webp?resize=247,350",
+                    "type": "Donghua"
+                }
+            ],
+            'genres-example': [
+                {
+                    "title": "36 Cavalry",
+                    "href": "/36-cavalry/",
+                    "image": "https://i3.wp.com/anichin.moe/wp-content/uploads/2023/10/36-Cavalry.webp?resize=247,350",
+                    "type": "Donghua"
+                }
+            ],
+            'seri-example': {
+                "details": [
+                    {
+                        "mainTitle": "36 Cavalry",
+                        "alternativeTitle": "三十六骑",
+                        "rating": "7.0",
+                        "status": "Completed",
+                        "episodes": "13",
+                        "type": "Donghua"
+                    }
+                ],
+                "episode_list": [
+                    {
+                        "episodeNumber": "13",
+                        "episodeTitle": "36 Kavaleri",
+                        "episodeLink": "/36-cavalry-episode-13-end-subtitle-indonesia/",
+                        "episodeDate": "December 28, 2023",
+                        "subtitleStatus": "Sub"
+                    }
+                ]
+            },
+            'episode-example': {
+                "title": "Legend of Martial Immortal Episode 142 Subtitle Indonesia",
+                "video_link": "https://example.com/video.mp4",
+                "details": {
+                    "mainTitle": "Legend of Martial Immortal",
+                    "rating": "8.00",
+                    "type": "Donghua",
+                    "status": "Ongoing"
+                }
+            }
+        };
+
+        // Load static examples
+        Object.keys(examples).forEach(exampleId => {
+            const exampleElement = document.getElementById(exampleId);
+            if (exampleElement) {
+                const jsonString = JSON.stringify(examples[exampleId], null, 2);
+                typeWriter(exampleElement, jsonString);
+            }
+        });
     </script>
 </body>
 
