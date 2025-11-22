@@ -91,8 +91,19 @@
             padding: 1rem;
             border-radius: 0.5rem;
             overflow-x: auto;
-            max-height: 300px;
+            overflow-y: auto;
+            max-height: 400px;
             font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            white-space: pre;
+            word-wrap: normal;
+        }
+
+        .code-block code {
+            display: block;
+            white-space: pre;
+            word-wrap: normal;
         }
 
         .input-box {
@@ -143,21 +154,16 @@
             transform: translateY(0);
         }
 
-        /* Typing Animation */
-        .typing::after {
-            content: '|';
-            animation: blink 1s step-end infinite;
+        /* Loading indicator */
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
         }
 
-        @keyframes blink {
-            from,
-            to {
-                opacity: 1
-            }
-
-            50% {
-                opacity: 0
-            }
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
         }
 
         /* API Card Styles */
@@ -173,6 +179,25 @@
         .api-card.dark-mode {
             background-color: #2d3748;
             color: #e2e8f0;
+        }
+
+        .light-mode .code-block {
+            background-color: #f7fafc;
+            color: #1a202c;
+            border: 1px solid #e2e8f0;
+        }
+
+        .light-mode .bg-gray-800 {
+            background-color: #e2e8f0 !important;
+            color: #1a202c !important;
+        }
+
+        .light-mode .text-green-400 {
+            color: #059669 !important;
+        }
+
+        .light-mode .text-yellow-400 {
+            color: #d97706 !important;
         }
     </style>
 </head>
@@ -318,19 +343,10 @@
             }
         });
 
-        // Typing effect simulation for code blocks
+        // Display code with proper formatting
         function typeWriter(element, text) {
-            let index = 0;
-            element.innerHTML = ''; // Clear previous content
-            const interval = setInterval(() => {
-                if (index < text.length) {
-                    element.textContent += text[index++];
-                    Prism.highlightElement(element);
-                } else {
-                    clearInterval(interval);
-                    Prism.highlightElement(element); // Highlight code once typing is done
-                }
-            }, 0.1);
+            element.textContent = text;
+            Prism.highlightElement(element);
         }
 
         async function fetchExample(endpoint, exampleId) {
@@ -351,22 +367,18 @@
             const url = `${baseUrl}/${type}/${param}`;
             const exampleElement = document.getElementById(exampleId);
 
-            exampleElement.parentElement.classList.add('typing');
-            typeWriter(exampleElement, '{ "loading": "Fetching data..." }');
+            exampleElement.parentElement.classList.add('loading');
+            exampleElement.textContent = 'Loading';
 
             try {
                 const response = await fetch(url);
                 const data = await response.json();
                 const jsonString = JSON.stringify(data, null, 2);
-                setTimeout(() => {
-                    typeWriter(exampleElement, jsonString);
-                    exampleElement.parentElement.classList.remove('typing');
-                }, 500);
+                exampleElement.parentElement.classList.remove('loading');
+                typeWriter(exampleElement, jsonString);
             } catch (error) {
-                setTimeout(() => {
-                    typeWriter(exampleElement, JSON.stringify({ error: 'Failed to fetch', message: error.message }, null, 2));
-                    exampleElement.parentElement.classList.remove('typing');
-                }, 500);
+                exampleElement.parentElement.classList.remove('loading');
+                typeWriter(exampleElement, JSON.stringify({ error: 'Failed to fetch', message: error.message }, null, 2));
             }
         }
 
