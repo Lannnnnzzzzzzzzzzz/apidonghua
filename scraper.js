@@ -7,7 +7,7 @@ const port = 3000;
 
 async function scrapeMainPage() {
   try {
-    const { data } = await axios.get('https://anichin.cafe/');
+    const { data } = await axios.get('https://anichin.moe/');
     const $ = cheerio.load(data);
 
     const results = [];
@@ -15,7 +15,7 @@ async function scrapeMainPage() {
     // Scrape latest releases from homepage
     $('.listupd.normal .excstf article.bs').each((index, element) => {
       const title = $(element).find('h2[itemprop="headline"]').text().trim();
-      const href = $(element).find('a.tip').attr('href')?.replace('https://anichin.cafe', '/episode') || '';
+      const href = $(element).find('a.tip').attr('href')?.replace('https://anichin.moe', '/episode') || '';
       const imgSrc = $(element).find('img.ts-post-image').attr('src');
       const episode = $(element).find('.bt .epx').text().trim();
       const type = $(element).find('.typez').text().trim();
@@ -38,7 +38,7 @@ async function scrapeMainPage() {
 
 async function scrapeOngoingPage() {
   try {
-      const url = 'https://anichin.cafe/schedule/';
+      const url = 'https://anichin.moe/schedule/';
       const { data } = await axios.get(url);
       const $ = cheerio.load(data);
 
@@ -67,7 +67,7 @@ async function scrapeOngoingPage() {
         const dayKey = dayMapping[dayClass];
         $(`.bixbox.schedulepage.${dayClass} .listupd .bs`).each((i, element) => {
           const title = $(element).find('a').attr('title')?.trim() || '';
-          const seriesLink = $(element).find('a').attr('href')?.replace('https://anichin.cafe', '') || '';
+          const seriesLink = $(element).find('a').attr('href')?.replace('https://anichin.moe', '') || '';
           const imageSrc = $(element).find('img').attr('src') || '';
           const episodeCount = $(element).find('.bt .sb').text().trim();
           const releaseTime = $(element).find('.bt .epx').text().trim();
@@ -92,7 +92,7 @@ async function scrapeOngoingPage() {
 // Function to scrape a specific episode
 async function scrapeEndpoint(endpoint) {
   try {
-    const url = `https://anichin.cafe${endpoint}`;
+    const url = `https://anichin.moe${endpoint}`;
     console.log('Scraping URL:', url);
 
     const { data } = await axios.get(url);
@@ -125,7 +125,7 @@ async function scrapeEndpoint(endpoint) {
 
     const episodeList = [];
     $('.eplister ul li').each((index, element) => {
-      const episodeHref = $(element).find('a').attr('href')?.replace('https://anichin.cafe', '/episode') || '';
+      const episodeHref = $(element).find('a').attr('href')?.replace('https://anichin.moe', '/episode') || '';
       const thumbnelSrc = $(element).find('.thumbnel img').attr('src');
       const episodeTitle = $(element).find('.playinfo h4').text().trim();
       const episodeDetails = $(element).find('.playinfo span').text().trim();
@@ -171,7 +171,7 @@ async function scrapeEndpoint(endpoint) {
 // list all completed series
 async function scrapeCompletedPage(page = 1) {
   try {
-    const url = page === 1 ? 'https://anichin.cafe/completed/' : `https://anichin.cafe/completed/page/${page}/`;
+    const url = page === 1 ? 'https://anichin.moe/completed/' : `https://anichin.moe/completed/page/${page}/`;
     const { data } = await axios.get(url);
     const $ = cheerio.load(data);
 
@@ -181,7 +181,7 @@ async function scrapeCompletedPage(page = 1) {
     $('article.bs').each((index, element) => {
       const title = $(element).find('h2[itemprop="headline"]').text().trim();
       const href = $(element).find('a.tip').attr('href');
-      const path = href ? new URL(href, 'https://anichin.cafe').pathname : '';
+      const path = href ? new URL(href, 'https://anichin.moe').pathname : '';
       const imgSrc = $(element).find('img').attr('src');
       const type = $(element).find('.typez').text().trim();
 
@@ -200,7 +200,7 @@ async function scrapeCompletedPage(page = 1) {
 // scrape series
 async function scrapeSeries(endpoint) {
     try {
-        const url = `https://anichin.cafe/seri/${endpoint}`;
+        const url = `https://anichin.moe/seri/${endpoint}`;
         console.log('Scraping Series URL:', url);
 
         const { data } = await axios.get(url);
@@ -236,7 +236,7 @@ async function scrapeSeries(endpoint) {
         $('.eplister ul li').each((i, el) => {
             const episodeNumber = $(el).find('.epl-num').text().trim();
             const episodeTitle = $(el).find('.epl-title').text().trim();
-            const episodeLink = $(el).find('a').attr('href')?.replace('https://anichin.cafe', '/episode') || '';
+            const episodeLink = $(el).find('a').attr('href')?.replace('https://anichin.moe', '/episode') || '';
             const episodeDate = $(el).find('.epl-date').text().trim();
             const subtitleStatus = $(el).find('.epl-sub span').text().trim();
 
@@ -282,7 +282,7 @@ async function scrapeSeries(endpoint) {
 
 async function scrapeGenres(genreName) {
   try {
-    const url = `https://anichin.cafe/genres/${genreName}`;
+    const url = `https://anichin.moe/genres/${genreName}`;
     const { data } = await axios.get(url);
     const $ = cheerio.load(data);
 
@@ -290,7 +290,7 @@ async function scrapeGenres(genreName) {
 
     $('article.bs').each((index, element) => {
       const title = $(element).find('h2[itemprop="headline"]').text().trim();
-      const href = $(element).find('a.tip').attr('href')?.replace('https://anichin.cafe', '') || '';
+      const href = $(element).find('a.tip').attr('href')?.replace('https://anichin.moe', '') || '';
       const imgSrc = $(element).find('img').attr('src');
       const type = $(element).find('.typez').text().trim();
 
